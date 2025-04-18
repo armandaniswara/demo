@@ -1,8 +1,11 @@
 package com.example.demo.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NonNull;
 
+@Data
 public class BaseResponse<T> {
 
     @NonNull
@@ -14,27 +17,10 @@ public class BaseResponse<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data = null;
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
+    @Builder
+    public BaseResponse(@NonNull int status, @NonNull String message, T data) {
         this.status = status;
-    }
-
-    public @NonNull String getMessage() {
-        return message;
-    }
-
-    public void setMessage(@NonNull String message) {
         this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
         this.data = data;
     }
 }
