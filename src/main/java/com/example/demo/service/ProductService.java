@@ -7,4 +7,7 @@ public interface ProductService {
 
     BaseResponse<Object> createProduct(CreateProductRequest request, String bearer);
 
+    BaseResponse<Object> productList(String bearer);
+
 }
+

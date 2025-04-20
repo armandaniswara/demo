@@ -76,8 +76,10 @@ public class JwtUtil {
     public UserInfo getUserInfo(String token) {
         UserInfo userInfo = null;
         try {
+//            var user = getUserinfoFromToken(token);
+
             userInfo = UserInfo.builder()
-                    .name(getUserinfoFromToken(token))
+                    .name( getUserinfoFromToken(token))
                     .build();
         } catch (ExpiredJwtException e) {
             log.error("Token expired: " + e.getMessage());

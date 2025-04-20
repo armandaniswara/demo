@@ -25,4 +25,13 @@ public class ProductController {
                 .body(response);
 
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<Object> getProductList(@RequestHeader(HttpHeaders.AUTHORIZATION) String bearer) {
+
+        var response = productService.productList(bearer);
+
+        return ResponseEntity.status(response.getStatus())
+                .body(response);
+    }
 }

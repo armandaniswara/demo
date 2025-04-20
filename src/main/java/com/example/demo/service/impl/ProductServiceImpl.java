@@ -10,6 +10,8 @@ import com.example.demo.util.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -49,6 +51,38 @@ public class ProductServiceImpl implements ProductService {
             response = BaseResponse.builder()
                     .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                     .message(ex.getMessage())
+                    .build();
+        }
+
+        return response;
+    }
+
+    @Override
+    public BaseResponse<Object> productList(String bearer) {
+        BaseResponse response;
+        try {
+            UserInfo userInfo = jwtUtil.getUserInfo(bearer);
+
+            if (userInfo == null) {
+                return BaseResponse.builder()
+                        .status(HttpStatus.UNAUTHORIZED.value())
+                        .message("Failed")
+                        .build();
+            }
+
+            List<Product> productList = productRepository.findAll();
+
+            response = BaseResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .message("Success product list")
+                    .data(productList)
+                    .build();
+
+        } catch (Exception ex) {
+
+            response = BaseResponse.builder()
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("error get product list : " + ex.getMessage())
                     .build();
         }
 
