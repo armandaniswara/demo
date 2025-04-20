@@ -1,11 +1,12 @@
 package com.example.demo.util;
 
 import com.example.demo.dto.response.TokenResponse;
+import com.example.demo.dto.response.UserInfo;
 import com.example.demo.entity.Users;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class JwtUtil {
 
     private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 jam
@@ -60,5 +62,35 @@ public class JwtUtil {
                 .build();
     }
 
+    public String getUserinfoFromToken(String bearer) {
+        String token = getTokenFromBearer(bearer);
+
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+
+    }
+
+    public UserInfo getUserInfo(String token) {
+        UserInfo userInfo = null;
+        try {
+            userInfo = UserInfo.builder()
+                    .name(getUserinfoFromToken(token))
+                    .build();
+        } catch (ExpiredJwtException e) {
+            log.error("Token expired: " + e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JWT: " + e.getMessage());
+        } catch (MalformedJwtException e) {
+            log.error("Malformed JWT: " + e.getMessage());
+        } catch (SignatureException e) {
+            log.error("Invalid signature: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.error("Token is null or empty: " + e.getMessage());
+        }
+        return userInfo; // Token tidak valid
+    }
 
 }
